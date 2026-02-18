@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Design Prompt Archive</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: #ffffff;
+      --accent: #111111;
+      --border: #dddddd;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: #222;
+    }
+
+    header {
+      padding: 24px 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 28px);
+      margin: 0 0 8px;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    input[type="search"] {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      font-size: 14px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      font-size: 12px;
+      background: #fafafa;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    main {
+      padding: 20px 16px 32px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    select {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #ccc;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      min-height: 220px;
+    }
+
+    .thumb {
+      background: linear-gradient(135deg, #eee, #ddd);
+      border-radius: 8px;
+      height: 140px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #777;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin: 4px 0;
+    }
+
+    .meta {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #f0f0f0;
+    }
+
+    .buttons {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-outline {
+      background: #fff;
+      border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    footer {
+      padding: 12px 16px 24px;
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+    }
+
+    /* モーダル */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 720px;
+      width: 100%;
+      padding: 20px 16px;
+      max-height: 90vh;
+      overflow: auto;
+    }
+
+    .modal h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .modal h4 {
+      font-size: 14px;
+      margin: 16px 0 4px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 12px;
+      font-family: inherit;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    .modal-actions {
+      text-align: right;
+      margin-top: 12px;
+    }
+
+    /* スマホ向け調整 */
+    @media (max-width: 640px) {
+      header {
+        padding: 20px 12px;
+      }
+
+      main {
+        padding: 16px 12px 24px;
+      }
+
+      .search-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      input[type="search"] {
+        width: 100%;
+      }
+
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      select {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .thumb {
+        height: 120px;
+      }
+
+      .buttons {
+        flex-direction: row;
+      }
+
+      .modal {
+        border-radius: 12px;
+        padding: 16px 12px;
+      }
+    }
+
+    /* 大きめ画面で少しゆとり */
+    @media (min-width: 1200px) {
+      .grid {
+        gap: 20px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Design Prompt Archive</h1>
+      <p class="subtitle">気に入ったデザインから、近いテイストを生成できるAIプロンプトを集めたアーカイブ。</p>
+
+      <div class="search-row">
+        <input type="search" placeholder="例：ミニマル、ランディングページ、ポスター…">
+        <span class="tag">#Minimal</span>
+        <span class="tag">#Brutalist</span>
+        <span class="tag">#Dark</span>
+        <span class="tag">#LP</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filters">
+      <select>
+        <option>すべてのカテゴリ</option>
+        <option>Web</option>
+        <option>Poster</option>
+        <option>App UI</option>
+      </select>
+      <select>
+        <option>スタイル</option>
+        <option>Minimal</option>
+        <option>Retro</option>
+        <option>Brutalist</option>
+      </select>
+      <select>
+        <option>カラーテーマ</option>
+        <option>Light</option>
+        <option>Dark</option>
+        <option>Colorful</option>
+      </select>
+    </section>
+
+    <section class="grid">
+      <!-- カード1 -->
+      <article class="card" data-prompt-id="p1">
+        <div class="thumb">サムネイル</div>
+        <h2>ミニマルなポートフォリオLP</h2>
+        <p class="meta">Web / Minimal / Light</p>
+        <div class="tags">
+          <span class="card-tag">#Sans-serif</span>
+          <span class="card-tag">#1Column</span>
+          <span class="card-tag">#Portfolio</span>
+        </div>
+        <div class="buttons">
+          <button class="btn-outline" onclick="openPrompt('p1')">プロンプトを見る</button>
+          <button class="btn-primary" onclick="location.href='detail.html?item=p1'">詳細</button>
+
+        </div>
+      </article>
+
+      <!-- カード2 -->
+      <article class="card" data-prompt-id="p2">
+        <div class="thumb">サムネイル</div>
+        <h2>大胆なタイポグラフィのポスター</h2>
+        <p class="meta">Poster / Bold / Colorful</p>
+        <div class="tags">
+          <span class="card-tag">#Typography</span>
+          <span class="card-tag">#Poster</span>
+        </div>
+        <div class="buttons">
+          <button class="btn-outline" onclick="openPrompt('p2')">プロンプトを見る</button>
+          <button class="btn-primary" onclick="location.href='detail.html?item=p1'">詳細</button>
+
+        </div>
+      </article>
+
+      <!-- カード3 -->
+      <article class="card" data-prompt-id="p3">
+        <div class="thumb">サムネイル</div>
+        <h2>ダークテーマのSaaSダッシュボード</h2>
+        <p class="meta">Web / Dark / UI</p>
+        <div class="tags">
+          <span class="card-tag">#Dashboard</span>
+          <span class="card-tag">#CardUI</span>
+        </div>
+        <div class="buttons">
+          <button class="btn-outline" onclick="openPrompt('p3')">プロンプトを見る</button>
+          <button class="btn-primary" onclick="location.href='detail.html?item=p1'">詳細</button>
+
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- プロンプト用モーダル -->
+  <div class="modal-backdrop" id="promptModal">
+    <div class="modal">
+      <h3 id="promptTitle">プロンプト</h3>
+
+      <h4>画像生成用</h4>
+      <textarea id="promptImage" readonly></textarea>
+      <button class="btn-outline" onclick="copyText('promptImage')">コピー</button>
+
+      <h4>コード生成用</h4>
+      <textarea id="promptCode" readonly></textarea>
+      <button class="btn-outline" onclick="copyText('promptCode')">コピー</button>
+
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="closePrompt()">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const promptData = {
+      p1: {
+        title: "ミニマルなポートフォリオLP",
+        image: "Minimal one-page portfolio website design, full-page hero section with large bold sans-serif heading on the left and portrait photo on the right, light grey background, accent color #FF4B4B, three project cards with subtle shadows, clean grid layout, modern web UI, high resolution",
+        code: "Create a responsive minimal portfolio landing page with a light grey background and accent color #FF4B4B. Include a hero section with a big bold heading on the left and a profile photo on the right, a three-column projects section with cards, an about section, and a simple contact form. Use a clean sans-serif font and modern CSS layout (Flexbox or Grid)."
+      },
+      p2: {
+        title: "大胆なタイポグラフィのポスター",
+        image: "Bold typographic poster design, large condensed sans-serif letters in the center, high contrast black and bright yellow color scheme, asymmetrical layout, minimal graphic elements, Swiss-inspired graphic design, A3 print, high resolution",
+        code: "Generate HTML and CSS for a bold typographic poster-style landing section. Use a full-height hero with a bright yellow background and large black condensed heading centered vertically. Keep content minimal with a short subtitle and a single call-to-action button. Use strong contrast and plenty of white space around the text."
+      },
+      p3: {
+        title: "ダークテーマのSaaSダッシュボード",
+        image: "Dark themed SaaS dashboard UI, clean card-based layout, sidebar navigation on the left, main content with charts and metrics cards, deep navy background with accent color #4F46E5, modern data visualization, minimalistic icons, web app screenshot",
+        code: "Create a dark-mode SaaS dashboard layout using HTML and CSS. Include a left sidebar for navigation and a main area with a top bar and a grid of metric cards and charts. Use a deep navy background with accent color #4F46E5, rounded cards, and a modern sans-serif font."
+      }
+    };
+
+    function openPrompt(id) {
+      const data = promptData[id];
+      document.getElementById('promptTitle').textContent = data.title;
+      document.getElementById('promptImage').value = data.image;
+      document.getElementById('promptCode').value = data.code;
+      document.getElementById('promptModal').style.display = 'flex';
+    }
+
+    function closePrompt() {
+      document.getElementById('promptModal').style.display = 'none';
+    }
+
+    function copyText(id) {
+      const el = document.getElementById(id);
+      el.select();
+      document.execCommand('copy');
+      alert('コピーしました');
+    }
+  </script>
+</body>
+</html>
